@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Cards from "./Cards";
 import Fuse from "fuse.js";
-import NavbarWithFilterBar from "./NavbarWithFilterBar";
+import NavbarWithFilterBar from "./Navbar";
 
 
 // Genre titles
@@ -24,6 +24,7 @@ export default function CardList() {
   const [filterText, setFilterText] = useState("");
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   const [sortOption, setSortOption] = useState("");
+
 
   useEffect(() => {
     fetch("https://podcast-api.netlify.app/shows")
@@ -87,20 +88,6 @@ export default function CardList() {
         onFilterChange={setFilterText}
         onSortClick={handleSort}
       />
-      {/* <div className="sort-buttons">
-        <button onClick={() => handleSort("az")}>Sort A-Z</button>
-        <button onClick={() => handleSort("za")}>Sort Z-A</button>
-        <button onClick={() => handleSort("asc")}>Sort Ascending</button>
-        <button onClick={() => handleSort("desc")}>Sort Descending</button>
-      </div>
-      <div className="search-box">
-        <input
-          type="text"
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-          placeholder="Filter by title or genre..."
-        />
-      </div> */}
       <div className="cards">
         {isLoading ? (
           <p>Loading...</p>
@@ -113,7 +100,7 @@ export default function CardList() {
                 descriptions={podcast.description}
                 season={podcast.seasons}
                 images={podcast.image}
-                genre={genreMapping[podcast.genres]}
+                genre={podcast.genres.map((id) => genreMapping[id]).join(",") || " unknown"}
                 updates={readableDate(podcast.updated)}
                 IsExpanded={expandedPosterId === podcast.id}
                 onExpandedClick={() => toogleExpand(podcast.id)}
@@ -125,3 +112,5 @@ export default function CardList() {
     </div>
   );
 }
+
+

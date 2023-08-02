@@ -35,13 +35,13 @@ nav{
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 50px;
   max-width: 1200px;
-  /* margin-top: 200px; */
+  margin-top: 200px;
   margin: 10px;
 }
 
 .cards{
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
   
 }
 
@@ -58,9 +58,9 @@ nav{
 }
 
 .like{
-  margin-left: 20px;
+  margin-left: 10px;
   max-width: 18px; 
-  margin-right: 2px;
+  margin-right: 4px;
 }
 
 .filledLike{
@@ -71,7 +71,7 @@ nav{
   max-width: 18px;
 }
 .search-box{
-  margin: 20px 
+  margin: 20px; 
   
 }
 
@@ -83,4 +83,29 @@ nav{
 .filter-bar{
   margin-right:70px;
 }
+
+/* Responsive styles for iPhone SE */
+@media screen and (max-width: 677px) {
+  
+  .grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    display: grid;
+  }
+  
+  .search-box {
+    margin: 10px;
+  }
+  
+  .nav {
+    height: 80px;
+    padding: 4px;
+  }
+
+  .sort-button{
+    margin: 20px;
+  }
+
+}
+
 
