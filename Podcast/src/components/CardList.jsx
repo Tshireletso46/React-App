@@ -1,8 +1,10 @@
+/*eslint-disable*/
 import { useState, useEffect } from "react";
 import Cards from "./Cards";
 import Fuse from "fuse.js";
 import NavbarWithFilterBar from "./Navbar";
-
+import FavoritePodcast from "./Favorites";
+// import Hero from "./Hero"
 
 // Genre titles
 const genreMapping = {
@@ -24,7 +26,8 @@ export default function CardList() {
   const [filterText, setFilterText] = useState("");
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   const [sortOption, setSortOption] = useState("");
-
+  const [favorites, setFavorites] = useState([]);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {
     fetch("https://podcast-api.netlify.app/shows")
@@ -81,36 +84,74 @@ export default function CardList() {
     setFilteredPodcasts(sortedPodcasts);
   };
 
+  // Handle favorite toggle - adding and removing podcasts from favorites
+  const favoriteToggleHandler = (podcastId) => {
+    setFavorites((prevFavorites) =>
+      prevFavorites.includes(podcastId)
+        ? prevFavorites.filter((id) => id !== podcastId)
+        : [...prevFavorites, podcastId]
+    );
+    setFilteredPodcasts((prevFilteredPodcasts) =>
+      prevFilteredPodcasts.map((podcast) =>
+        podcast.id === podcastId
+          ? { ...podcast, isFavorite: !podcast.isFavorite }
+          : podcast
+      )
+    );
+  };
+
+  const favoritePodcasts = podcastData.filter((podcast) =>
+    favorites.includes(podcast.id)
+  );
+
+  const displayedPodcasts = showFavorites ? favoritePodcasts : filteredPodcasts;
+
+  // Store favorites in local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("favoritePodcasts", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleView = () => {
+    setShowFavorites((prev) => !prev);
+  };
+
   return (
     <div>
+      {/* <Hero /> */}
       <NavbarWithFilterBar
         filterText={filterText}
         onFilterChange={setFilterText}
         onSortClick={handleSort}
+        onToggleView={toggleView}
       />
-      <div className="cards">
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="grid-container">
-            {filteredPodcasts.map((podcast) => (
-              <Cards
-                key={podcast.id}
-                titles={podcast.title}
-                descriptions={podcast.description}
-                season={podcast.seasons}
-                images={podcast.image}
-                genre={podcast.genres.map((id) => genreMapping[id]).join(",") || " unknown"}
-                updates={readableDate(podcast.updated)}
-                IsExpanded={expandedPosterId === podcast.id}
-                onExpandedClick={() => toogleExpand(podcast.id)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {showFavorites ? (
+        <FavoritePodcast favoritePodcasts={favoritePodcasts} />
+      ) : (
+        <div className="cards">
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <div className="grid-container">
+              {displayedPodcasts.map((podcast) => (
+                <Cards
+                  key={podcast.id}
+                  titles={podcast.title}
+                  descriptions={podcast.description}
+                  season={podcast.seasons}
+                  images={podcast.image}
+                  genre={podcast.genres.map((id) => genreMapping[id]).join(",") || " unknown"}
+                  updates={readableDate(podcast.updated)}
+                  IsExpanded={expandedPosterId === podcast.id}
+                  onExpandedClick={() => toogleExpand(podcast.id)}
+                  isFavorite={favorites.includes(podcast.id)}
+                  onFavouriteClick={() => favoriteToggleHandler(podcast.id)}
+                />
+                
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
-
-

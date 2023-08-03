@@ -1,8 +1,10 @@
-const Navbar = ({ filterText, onFilterChange, onSortClick }) => {
+/*eslint-disable*/
+const Navbar = ({ filterText, onFilterChange, onSortClick, onToggleView, showFavorites}) => {
+
   return (
     <nav> 
       <header>
-        <img src="./images/Logo.png" alt="Logo" className="logo" />
+        <img src="./images/Logo.png" alt="Logo" className="logo" onClick={onToggleView}/>
       </header>
       <div>
         <div className="sort-buttons">
@@ -10,7 +12,7 @@ const Navbar = ({ filterText, onFilterChange, onSortClick }) => {
           <button onClick={() => onSortClick("za")}>Sort Z-A</button>
           <button onClick={() => onSortClick("asc")}>Sort Ascending</button>
           <button onClick={() => onSortClick("desc")}>Sort Descending</button>
-          <button>Favourites</button>
+          <button onClick={onToggleView}>Favourites</button>
         </div>
         
         <div className="search-box">
@@ -27,4 +29,3 @@ const Navbar = ({ filterText, onFilterChange, onSortClick }) => {
 };
 
 export default Navbar;
-
