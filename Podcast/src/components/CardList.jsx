@@ -3,8 +3,8 @@ import Cards from "./Cards";
 import Fuse from "fuse.js";
 import NavbarWithFilterBar from "./Navbar";
 import FavoritePodcast from "./Favorites";
+import Hero from "./Hero";
 
-// Genre titles
 const genreMapping = {
   1: "Personal Growth",
   2: "True Crime and Investigative Journalism",
@@ -27,6 +27,7 @@ export default function CardList() {
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState("all");
+  const [numPodcastToShow, setNumPodcastToShow] = useState();
 
   useEffect(() => {
     fetch("https://podcast-api.netlify.app/shows")
@@ -37,16 +38,66 @@ export default function CardList() {
       });
   }, []);
 
-  // Changing the date
   const readableDate = (isDate) => {
     const date = new Date(isDate);
     const options = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString(undefined, options);
   };
 
-  const toogleExpand = (podcastId) => {
-    setExpandedPosterId(podcastId === expandedPosterId ? null : podcastId);
+  const handleSort = (option) => {
+    setSortOption(option);
+    let sortedPodcasts = [...filteredPodcasts];
+    switch (option) {
+      case "az":
+        sortedPodcasts.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "za":
+        sortedPodcasts.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "asc":
+        sortedPodcasts.sort((a, b) => new Date(a.updated) - new Date(b.updated));
+        break;
+      case "desc":
+        sortedPodcasts.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+        break;
+      default:
+        break;
+    }
+    setFilteredPodcasts(sortedPodcasts);
   };
+
+  const handleGenreChange = (e) => {
+    setSelectedGenre(e.target.value);
+  };
+
+  const toggleView = () => {
+    setShowFavorites((prev) => !prev);
+  };
+
+  const favoriteToggleHandler = (podcastId) => {
+    setFavorites((prevFavorites) =>
+      prevFavorites.includes(podcastId)
+        ? prevFavorites.filter((id) => id !== podcastId)
+        : [...prevFavorites, podcastId]
+    );
+    setFilteredPodcasts((prevFilteredPodcasts) =>
+      prevFilteredPodcasts.map((podcast) =>
+        podcast.id === podcastId
+          ? { ...podcast, isFavorite: !podcast.isFavorite }
+          : podcast
+      )
+    );
+  };
+
+  useEffect(() => {
+    localStorage.setItem("favoritePodcasts", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const favoritePodcasts = podcastData.filter((podcast) =>
+    favorites.includes(podcast.id)
+  );
+
+  const displayedPodcasts = showFavorites ? favoritePodcasts : filteredPodcasts;
 
   useEffect(() => {
     if (!filterText) {
@@ -71,85 +122,50 @@ export default function CardList() {
     }
   }, [filterText, podcastData, selectedGenre]);
 
-  const handleSort = (option) => {
-    setSortOption(option);
-    let sortedPodcasts = [...filteredPodcasts];
-    switch (option) {
-      case "az":
-        sortedPodcasts.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "za":
-        sortedPodcasts.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case "asc":
-        sortedPodcasts.sort(
-          (a, b) => new Date(a.updated) - new Date(b.updated)
-        );
-        break;
-      case "desc":
-        sortedPodcasts.sort(
-          (a, b) => new Date(b.updated) - new Date(a.updated)
-        );
-        break;
-      default:
-        break;
-    }
-    setFilteredPodcasts(sortedPodcasts);
-  };
-
-  // Handle favorite toggle - adding and removing podcasts from favorites
-  const favoriteToggleHandler = (podcastId) => {
-    setFavorites((prevFavorites) =>
-      prevFavorites.includes(podcastId)
-        ? prevFavorites.filter((id) => id !== podcastId)
-        : [...prevFavorites, podcastId]
-    );
-    setFilteredPodcasts((prevFilteredPodcasts) =>
-      prevFilteredPodcasts.map((podcast) =>
-        podcast.id === podcastId
-          ? { ...podcast, isFavorite: !podcast.isFavorite }
-          : podcast
-      )
-    );
-  };
-
-  const favoritePodcasts = podcastData.filter((podcast) =>
-    favorites.includes(podcast.id)
-  );
-
-  const displayedPodcasts = showFavorites ? favoritePodcasts : filteredPodcasts;
-
-  // Store favorites in local storage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("favoritePodcasts", JSON.stringify(favorites));
-  }, [favorites]);
-
-  const toggleView = () => {
-    setShowFavorites((prev) => !prev);
-    
-  };
-
-
   return (
     <div>
-      {/* <Hero /> */}
-      <NavbarWithFilterBar
-        filterText={filterText}
-        onFilterChange={setFilterText}
-        onSortClick={handleSort}
-        onToggleView={toggleView}
-        selectedGenre={selectedGenre}
-        setSelectedGenre={setSelectedGenre}
-      />
+      <NavbarWithFilterBar onToggleView={toggleView} />
       {showFavorites ? (
         <FavoritePodcast favoritePodcasts={favoritePodcasts} />
       ) : (
-        <div className="cards">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <div className="grid-container">
-              {displayedPodcasts.map((podcast) => (
+        <>
+          <div className="sort-buttons">
+            <button onClick={() => handleSort("az")}>Sort A-Z</button>
+            <button onClick={() => handleSort("za")}>Sort Z-A</button>
+            <button onClick={() => handleSort("asc")}>Sort Ascending</button>
+            <button onClick={() => handleSort("desc")}>Sort Descending</button>
+          </div>
+
+          <div className="search-box">
+            <input
+              type="text"
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+              placeholder="Search..."
+            />
+          </div>
+
+          <div className="genre-filter">
+            <label htmlFor="genre-select">Filter by Genre: </label>
+            <select
+              id="genre-select"
+              value={selectedGenre}
+              onChange={handleGenreChange}
+            >
+              <option value="">All Genres</option>
+              {Object.entries(genreMapping).map(([id, genre]) => (
+                <option key={id} value={id}>
+                  {genre}
+                </option>
+              ))}
+            </select>
+          </div>
+            <Hero />
+          <div className="grid-container">
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              displayedPodcasts.slice(0, numPodcastToShow).map((podcast) => (
                 <Cards
                   key={podcast.id}
                   titles={podcast.title}
@@ -158,18 +174,18 @@ export default function CardList() {
                   images={podcast.image}
                   genre={
                     podcast.genres.map((id) => genreMapping[id]).join(",") ||
-                    " unknown"
+                    "unknown"
                   }
                   updates={readableDate(podcast.updated)}
                   IsExpanded={expandedPosterId === podcast.id}
-                  onExpandedClick={() => toogleExpand(podcast.id)}
+                  onExpandedClick={() => setExpandedPosterId(podcast.id)}
                   isFavorite={favorites.includes(podcast.id)}
                   onFavouriteClick={() => favoriteToggleHandler(podcast.id)}
                 />
-              ))}
-            </div>
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        </>
       )}
     </div>
   );

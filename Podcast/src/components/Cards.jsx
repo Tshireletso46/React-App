@@ -4,6 +4,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 
+
 export default function Cards(props) {
   const [expanded, setExpanded] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -14,6 +15,7 @@ export default function Cards(props) {
 
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);
+    
   };
 
   return (

@@ -1,0 +1,74 @@
+nav{
+    height: 100px;
+}
+.icon-logo{
+    width: 50px;
+}
+.images{
+    width: 230px;
+}
+.Poster{
+    display: flex;
+    justify-content: center;
+    max-width: 400px;
+}
+.card{
+    background-color: rgb(169, 166, 164);
+    border-radius: 10px;
+    padding-left: 10px;
+    height:fit-content;
+    transition: all 0.5s ease;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+.star{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.expand{
+    cursor: pointer;
+    float:right;
+}
+.card.expanded {
+    z-index: 2;
+    transform: scale(1.2);
+    filter: brightness(1);
+    width: 400px;
+    margin: 0 auto;
+}
+.card:not(.expanded) {
+    filter: blur(2px) brightness(0.7);
+  }
+  .nav{
+    background-color: rgb(75, 73, 72);
+  }
+  
+  /* Add a media query for smaller screen sizes like iPhone SE */
+@media (max-width: 320px) {
+    /* Adjust the grid layout for smaller screens */
+    .grid-container {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+  .images{
+    width: 50px;
+  }
+    /* Reduce font size for smaller screens */
+    .poster-title {
+      font-size: 12px;
+    }
+    .poster-description {
+      font-size: 10px;
+    }
+  }
+  /* Additional media queries for other small screen sizes if needed */
+  /* For example, for iPhone 5/SE, 5S, 5C */
+  /* @media (max-width: 320px) and (max-height: 568px) { */
+    /* Add specific styles for this screen size */

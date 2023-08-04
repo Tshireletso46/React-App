@@ -1,6 +1,7 @@
 
 import './App.css';
 import PodcastList from './components/CardList';
+import Seasons from "./components/Seasons"
 // import Supa from './config/SupabaseClient';
 // import { Supabase } from './config/SupabaseClient';
 // import { useState, useEffect } from 'react';
@@ -24,6 +25,7 @@ export default function App() {
     {/* {signUpState ==='SignPhase' && <Supa />}  */}
        {/* { signUpState ==='startPhase' && <div className="app"></div>} */}
         <PodcastList/>
+        <Seasons />
         {/* <SupabaseClient /> */}
        
     </>
