@@ -1,5 +1,6 @@
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 export default function Poster(props) {
   const handleExpandClick = () => {
     if (!props.isFavorite) {
@@ -25,6 +26,7 @@ export default function Poster(props) {
       ) : (
         <img src="./images/heart.png" className="star" onClick={handleFavoriteClick} alt="Not Favorite" />
       )}
+
      {/* Show more/ show less */}
      {props.isExpanded ? (
         <>

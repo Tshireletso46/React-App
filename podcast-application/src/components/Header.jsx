@@ -3,6 +3,7 @@ import axios from "axios";
 import "../styles/header.css"
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
+
 export default function Header() {
   const [shows, setShows] = useState([]);
   const [carouselPosition, setCarouselPosition] = useState(0);
@@ -10,6 +11,7 @@ export default function Header() {
   const slidesToShow = 5;
   const containerWidth = slideWidth * shows.length;
   useEffect(() => {
+
     // Fetch data from the API when the component mounts
     axios
       .get("https://podcast-api.netlify.app/shows")
@@ -21,15 +23,18 @@ export default function Header() {
         console.error("Error fetching data:", error);
       });
   }, []);
+
   const moveCarousel = (steps) => {
     const newPosition = carouselPosition + steps * slideWidth * slidesToShow;
     setCarouselPosition(Math.max(-(containerWidth - slideWidth * slidesToShow), Math.min(0, newPosition)));
   };
+
   let interval;
   const handleBackwardMouseDown = () => {
     clearInterval(interval);
     interval = setInterval(() => moveCarousel(1), 100);
   };
+
   const handleForwardMouseDown = () => {
     clearInterval(interval);
     interval = setInterval(() => moveCarousel(-1), 100);

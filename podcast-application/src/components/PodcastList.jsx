@@ -19,6 +19,7 @@ const Genre = {
   8: "News",
   9: "Kids and Family",
 };
+
 const PodcastList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [podcastData, setPodcastData] = useState([]);
@@ -30,6 +31,7 @@ const PodcastList = (props) => {
   const [showFavorites, setShowFavorites] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState("all");
   const [numPodcastToShow, setNumPodcastToShow] = useState(9);
+  
   useEffect(() => {
     fetch("https://podcast-api.netlify.app/shows")
       .then((res) => res.json())
@@ -42,10 +44,17 @@ const PodcastList = (props) => {
         setIsLoading(false);
       });
   }, []);
+
   // show more
   const handleShowMoreClick = () => {
     setNumPodcastToShow(numPodcastToShow + 9);
   };
+
+  // Function to handle going back to the top
+const handleBackToTopClick = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
   // Search podcasts based on filter text
   useEffect(() => {
     if (!filterText) {
@@ -144,6 +153,7 @@ const PodcastList = (props) => {
     setShowFavorites((prev) => !prev);
   };
   const { title, description, seasons } = podcastData;
+
   return (
     <div>
       <>
@@ -204,6 +214,7 @@ const PodcastList = (props) => {
                     onExpandClick={() => toggleExpand(podcast.id)}
                     isFavorite={favorites.includes(podcast.id)}
                     onFavoriteClick={() => favoriteToggleHandler(podcast.id)}
+                    
                   />
                 ))
               )}
@@ -211,6 +222,7 @@ const PodcastList = (props) => {
           </>
         )}
       </>
+      
       {filteredPodcasts.length > numPodcastToShow && (
         <div className="show-more-button">
           <IconButton onClick={handleShowMoreClick}>

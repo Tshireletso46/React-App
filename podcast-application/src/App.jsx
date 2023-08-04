@@ -11,6 +11,7 @@ export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
   const [phase, setPhase] = useState('signUpPhase')
   const [pageState, setPageState] = useState('signUpPhase')
+
   useEffect(() => {
     const authListener = Supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
@@ -19,10 +20,12 @@ export default function App() {
         setIsSignedIn(true)
       }
     });
+
     return () => {
       authListener.unsubscribe;
     };
   }, [])
+  
   async function HandlePreviewClick(event) {
     if (phase === 'previewPhase') {
       const buttonId = event.currentTarget.id
@@ -55,8 +58,7 @@ export default function App() {
       )}
     </>
   );
-  //CALLING COMPONENT IN APP
-      }
+ }
 
 
 
