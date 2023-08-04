@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Poster from "./Poster";
 import Fuse from "fuse.js";
-import NavBar from "./NavBar";
-import FavoritePodcast from "./Favorite";
+import Navbar from "./NavBar";
+import FavoritePodcast from "./Favorites";
 import Header from "./Header";
 import { IconButton } from "@mui/material";
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
@@ -147,7 +147,7 @@ const PodcastList = (props) => {
   return (
     <div>
       <>
-        <NavBar onToggleView={toggleView} />
+        <Navbar onToggleView={toggleView} />
         {showFavorites ? (
           <FavoritePodcast favoritePodcasts={favoritePodcasts} />
         ) : (
