@@ -1,10 +1,8 @@
-/*eslint-disable*/
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Cards from "./Cards";
 import Fuse from "fuse.js";
 import NavbarWithFilterBar from "./Navbar";
 import FavoritePodcast from "./Favorites";
-// import Hero from "./Hero"
 
 // Genre titles
 const genreMapping = {
@@ -28,6 +26,7 @@ export default function CardList() {
   const [sortOption, setSortOption] = useState("");
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState("all");
 
   useEffect(() => {
     fetch("https://podcast-api.netlify.app/shows")
@@ -51,16 +50,26 @@ export default function CardList() {
 
   useEffect(() => {
     if (!filterText) {
-      setFilteredPodcasts(podcastData);
+      if (selectedGenre) {
+        const filteredByGenre = podcastData.filter(
+          (podcast) =>
+            selectedGenre === "all" ||
+            podcast.genres.includes(Number(selectedGenre))
+        );
+        setFilteredPodcasts(filteredByGenre);
+      } else {
+        setFilteredPodcasts(podcastData);
+      }
     } else {
       const options = {
         keys: ["title", "description", "genres"],
       };
+
       const fuse = new Fuse(podcastData, options);
       const result = fuse.search(filterText);
       setFilteredPodcasts(result.map((item) => item.item));
     }
-  }, [filterText, podcastData]);
+  }, [filterText, podcastData, selectedGenre]);
 
   const handleSort = (option) => {
     setSortOption(option);
@@ -73,10 +82,14 @@ export default function CardList() {
         sortedPodcasts.sort((a, b) => b.title.localeCompare(a.title));
         break;
       case "asc":
-        sortedPodcasts.sort((a, b) => new Date(a.updated) - new Date(b.updated));
+        sortedPodcasts.sort(
+          (a, b) => new Date(a.updated) - new Date(b.updated)
+        );
         break;
       case "desc":
-        sortedPodcasts.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+        sortedPodcasts.sort(
+          (a, b) => new Date(b.updated) - new Date(a.updated)
+        );
         break;
       default:
         break;
@@ -113,7 +126,9 @@ export default function CardList() {
 
   const toggleView = () => {
     setShowFavorites((prev) => !prev);
+    
   };
+
 
   return (
     <div>
@@ -123,6 +138,8 @@ export default function CardList() {
         onFilterChange={setFilterText}
         onSortClick={handleSort}
         onToggleView={toggleView}
+        selectedGenre={selectedGenre}
+        setSelectedGenre={setSelectedGenre}
       />
       {showFavorites ? (
         <FavoritePodcast favoritePodcasts={favoritePodcasts} />
@@ -139,14 +156,16 @@ export default function CardList() {
                   descriptions={podcast.description}
                   season={podcast.seasons}
                   images={podcast.image}
-                  genre={podcast.genres.map((id) => genreMapping[id]).join(",") || " unknown"}
+                  genre={
+                    podcast.genres.map((id) => genreMapping[id]).join(",") ||
+                    " unknown"
+                  }
                   updates={readableDate(podcast.updated)}
                   IsExpanded={expandedPosterId === podcast.id}
                   onExpandedClick={() => toogleExpand(podcast.id)}
                   isFavorite={favorites.includes(podcast.id)}
                   onFavouriteClick={() => favoriteToggleHandler(podcast.id)}
                 />
-                
               ))}
             </div>
           )}

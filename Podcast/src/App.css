@@ -65,6 +65,7 @@ nav{
 .favourites{
   max-width: 18px;
 }
+
 .search-box{
   margin: 20px; 
   
@@ -99,6 +100,11 @@ nav{
 
   .sort-button{
     margin: 20px;
+  }
+
+  .shows{
+    padding: 5%;
+
   }
 
 }
