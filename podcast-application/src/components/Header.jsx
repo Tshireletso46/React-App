@@ -1,8 +1,6 @@
-import  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/header.css"
-import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
-import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 export default function Header() {
   const [shows, setShows] = useState([]);
@@ -10,9 +8,9 @@ export default function Header() {
   const slideWidth = 200;
   const slidesToShow = 5;
   const containerWidth = slideWidth * shows.length;
-  useEffect(() => {
 
-    // Fetch data from the API when the component mounts
+  useEffect(() => {
+    // Fetch data from the API when the component mounts []
     axios
       .get("https://podcast-api.netlify.app/shows")
       .then((response) => {
@@ -23,28 +21,23 @@ export default function Header() {
         console.error("Error fetching data:", error);
       });
   }, []);
-
-  const moveCarousel = (steps) => {
-    const newPosition = carouselPosition + steps * slideWidth * slidesToShow;
-    setCarouselPosition(Math.max(-(containerWidth - slideWidth * slidesToShow), Math.min(0, newPosition)));
-  };
-
-  let interval;
-  const handleBackwardMouseDown = () => {
-    clearInterval(interval);
-    interval = setInterval(() => moveCarousel(1), 100);
-  };
-
-  const handleForwardMouseDown = () => {
-    clearInterval(interval);
-    interval = setInterval(() => moveCarousel(-1), 100);
-  };
-  const handleMouseUp = () => {
-    clearInterval(interval);
-  };
+  useEffect(() => {
+    // Move the carousel continuously like a marquee
+    const interval = setInterval(() => {
+      const newPosition = carouselPosition - slideWidth;
+      setCarouselPosition((prevPosition) =>
+        prevPosition <= -containerWidth + slideWidth * slidesToShow
+          ? 0
+          : newPosition
+      );
+    }, 1000); // Adjust the interval speed as needed (in milliseconds)
+    return () => {
+      clearInterval(interval);
+    };
+  }, [carouselPosition, containerWidth, slideWidth, slidesToShow]);
   return (
     <div className="hero-section">
-      <div className="carousel-container" >
+      <div className="carousel-container">
         <div
           className="show-info"
           style={{
@@ -60,16 +53,6 @@ export default function Header() {
           ))}
         </div>
       </div>
-      <ArrowBackIosNewOutlinedIcon
-        className="arrow-icon backward"
-        onMouseDown={handleBackwardMouseDown}
-        onMouseUp={handleMouseUp}
-      />
-      <ArrowForwardIosOutlinedIcon
-        className="arrow-icon forward"
-        onMouseDown={handleForwardMouseDown}
-        onMouseUp={handleMouseUp}
-      />
     </div>
   );
 }

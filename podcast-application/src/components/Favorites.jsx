@@ -1,4 +1,5 @@
 import  { useState } from "react";
+
 const Genre = {
   1: "Personal Growth",
   2: "True Crime and Investigative Journalism",
@@ -10,16 +11,19 @@ const Genre = {
   8: "News",
   9: "Kids and Family",
 };
+
 const FavoritePodcast = ({ favoritePodcasts }) => {
 const [sortOption, setSortOption] = useState("az");
 const handleSort = (option) => {
 setSortOption(option);
   };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
     return date.toLocaleDateString(undefined, options);
   };
+
   let sortedFavorites = [...favoritePodcasts];
   switch (sortOption) {
     case "az":
@@ -37,25 +41,38 @@ setSortOption(option);
     default:
       break;
   }
+
+  const sortOptions = [
+    { value: "az", label: "Sort A-Z" },
+    { value: "za", label: "Sort Z-A" },
+    { value: "asc", label: "Sort by Date Ascending" },
+    { value: "desc", label: "Sort by Date Descending" },
+  ];
+
   return (
-    <div>
+       <div>
       <h2>Favorite Podcasts</h2>
       <div className="sort-buttons">
-        <button onClick={() => handleSort("az")}>Sort A-Z</button>
-        <button onClick={() => handleSort("za")}>Sort Z-A</button>
-        <button onClick={() => handleSort("asc")}>Sort by Date Ascending</button>
-        <button onClick={() => handleSort("desc")}>Sort by Date Descending</button>
+        <label htmlFor="sort-select">Sort By:</label>
+        <select id="sort-select" value={sortOption} onChange={(e) => handleSort(e.target.value)}>
+          {sortOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
+
       {sortedFavorites.length > 0 ? (
         <ul>
           {sortedFavorites.map((podcast) => (
             <li key={podcast.id}>
               <strong>{podcast.title}</strong>
-              <img src={podcast.image} className="card--images" alt="Podcast" width="30%" />
+              <img src={podcast.image} className="card--images" alt="Podcast" />
             <p>Seasons: {podcast.seasons}</p>
             <p>Genres: {podcast.genres.map((genre) => Genre[genre]).join(",")}</p>
-            <p>Updated: {podcast.updated}</p>
-              Added on: {formatDate(podcast.addedDate)}
+            <p>Updated: {(new Date(podcast.updated)).toLocaleDateString('en-GB',{hour: '2-digit', minute:'2-digit'})}</p>
+              Added on: {(new Date()).toLocaleDateString('en-GB',{hour: '2-digit', minute:'2-digit'})}
             </li>
           ))}
         </ul>
@@ -63,6 +80,7 @@ setSortOption(option);
         <p>No favorite podcasts yet. Start adding some!</p>
       )}
     </div>
+
   );
 };
 export default FavoritePodcast;

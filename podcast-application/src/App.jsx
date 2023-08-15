@@ -1,6 +1,5 @@
 import './App.css';
 import PodcastList from './components/PodcastList';
-// import Footer from './components/Footer';
 import Supa from './config/SupabaseClient';
 import { Supabase } from './config/SupabaseClient';
 import { useState, useEffect } from 'react';
@@ -28,7 +27,7 @@ export default function App() {
   
   async function HandlePreviewClick(event) {
     if (phase === 'previewPhase') {
-      const buttonId = event.currentTarget.id
+      const buttonId = event.target.id
       console.log(buttonId)
       // const showTitle = event.currentTarget.title
       if (buttonId) {
@@ -43,6 +42,7 @@ export default function App() {
       }
     }
   }
+
   return (
     <>
     { phase ==='seasonPhase' && <Season pageState={pageState}/>}
@@ -50,7 +50,6 @@ export default function App() {
         <>
           <div className="app">
             <PodcastList  HandlePreviewClick={HandlePreviewClick}/>
-            {/* <Footer /> */}
           </div>
         </>
       ) : (
@@ -59,7 +58,3 @@ export default function App() {
     </>
   );
  }
-
-
-
-

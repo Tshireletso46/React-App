@@ -1,9 +1,11 @@
 nav{
     height: 100px;
+    position: relative;
 }
 
-.icon-logo{
-    width: 50px;
+.Logo{
+    width: 80px;
+    height: 80px;
 }
 
 .images{
@@ -22,15 +24,17 @@ nav{
     padding-left: 10px;
     height:fit-content;
     transition: all 0.5s ease;
+  
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    gap: 30px;
     max-width: 1200px;
     margin-top: 20px;
     justify-content: center;
+    padding-left: 50px;
   }
 
 .star{
@@ -52,38 +56,67 @@ nav{
     margin: 0 auto;
 }
 
-.card:not(.expanded) {
-    filter: blur(2px) brightness(0.7);
-  }
-
   .nav{
-    background-color: rgb(75, 73, 72);
+    background-color: rgb(116, 115, 114);
+  
   }
 
-  .favorites{
-    size: 10px;
+  .sort_by{
+    color: rgb(240, 243, 245);
   }
 
-  .movie_icon{
-    size: 2px;
+  .filter_genre{
+    color: rgb(240, 243, 245);
   }
+  
+  .show_more{
+    background-color: rgb(102, 104, 104);
+    border-radius: 5px;
+  }
+
+  .seasonimage{
+    width:200px;
+    height: 200px;
+  }
+
+.card--images{
+  width: 200px;
+}
   
   /* Add a media query for smaller screen sizes like iPhone SE */
-@media (max-width: 320px) {
-    .grid-container {
-      grid-template-columns: repeat(2, minmax(1, fr));
-      gap: 10px;
-    }
 
-  .images{
-    width: 50px;
-  }
+  @media (max-width: 376px) {
 
-    .poster-title {
-      font-size: 12px;
+    .card {
+      font-family: 'Times New Roman', Times, serif;
+      /* max-width: fit-content; */
     }
-    .poster-description {
-      font-size: 10px;
-    }
-  }
   
+    .nav {
+      max-width: fit-content;
+    }
+
+    .Logo{
+      height: 80px;
+    }
+  
+    .grid-container {
+      grid-template-columns: repeat(2, minmax(2px, 1fr));
+      gap: 10px; /* Adjust the gap for better spacing on smaller screens */
+      justify-content: center;
+      padding-left: 10px; /* Adjust padding for better spacing on smaller screens */
+      max-width: fit-content;
+    }
+  
+    .card.expanded {
+      width: 250px; /* Adjust the expanded card width for better display on smaller screens */
+    }
+  
+    .expand {
+      float: none; /* Remove float for better alignment on smaller screens */
+    }
+
+    .images{
+      width: 110px;
+    }
+  }
